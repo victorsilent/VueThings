@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monster Slayer</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  <style>
+    .controls{
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">Player</h3>
+        </div>
+
+        <div class="panel-body">
+          <h4>HP: {{player.health}}</h4>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" :style="{width: (player.health/100)*100+'%'}">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="panel panel-danger">
+        <div class="panel-heading">
+          <h3 class="panel-title">Monster</h3>
+        </div>
+        <div class="panel-body">
+          <h4>HP: {{monster.health}}</h4>
+          <div class="progress">
+            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" :style="{width: (monster.health/130)*100+'%'}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <div class="panel controls">
+        <template v-if="!gameStarted">
+          <div class="panel-body">
+            <div class="btn btn-primary" @click="startGame">START GAME</div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="panel-body">
+            <div class="btn btn-info" @click="attack">ATACK</div>
+            <div class="btn btn-success" @click="superAttack">SUPER ATACK</div>
+            <div class="btn btn-warning" @click="heal" >HEAL</div>
+            <div class="btn btn-default" @click="restart">GIVE UP</div>
+          </div>
+        </template>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <ul class="list-group">
+      <template v-for="turn in turns">
+        <li class="list-group-item list-group-item-info">{{turn.player}}</li>
+        <li class="list-group-item list-group-item-danger">{{turn.monster}}</li>
+      </template>
+    </ul>
+  </div>
+  
+
+</div>
+
+<script src="https://npmcdn.com/vue/dist/vue.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      gameStarted: false,
+      player: {
+        health: 0,
+        attacks: [],
+        heals: [],
+      },
+      monster: {
+        health: 0,
+        attacks: []
+      },
+      turns: [],
+    },
+    methods: {
+      startGame: function(){
+        this.gameStarted = true
+        this.player.health = 100
+        this.player.attacks = []
+        this.player.heals = []
+        this.monster.health = 130
+        this.monster.attacks = []
+        this.turns = []
+      },
+      attack: function(){
+        let playerDamage = this.playerAttack()
+        let monsterDamage = this.monsterAttack()
+        this.monster.health -= playerDamage
+        this.player.health -= monsterDamage
+        this.turns.push(
+          {
+            player: "Player hits Monster with " + playerDamage,
+            monster: "Monster hits Player with " + monsterDamage,
+          }
+        )
+        this.checkEndGame()
+      },
+      superAttack: function(){
+        let playerDamage = this.playerAttack()
+        let monsterDamage = this.monsterAttack()
+        if(Math.random() > 0.4){
+          playerDamage *= 3
+        }
+        monsterDamage *= 2
+        this.monster.health -= playerDamage
+        this.player.health -= monsterDamage
+        this.turns.push(
+          {
+            player: "Player hits Monster with " + playerDamage,
+            monster: "Monster hits Player with " + monsterDamage,
+          }
+        )
+        this.checkEndGame()
+      },
+
+      heal: function(){
+        let playerHeal = this.playerHeal()
+        let monsterDamage = this.monsterAttack()
+        this.player.health -= monsterDamage
+        this.player.health += playerHeal
+        this.turns.push(
+          {
+            player: "Player heals his life with " + playerHeal,
+            monster: "Monster hits Player with " + monsterDamage,
+          }
+        )
+        this.checkEndGame()
+      },
+
+      restart: function(){
+        this.gameStarted = false
+        this.player = {
+          health: 0,
+          attacks: [],
+          heals: [],
+        }
+        this.monster = {
+          health: 0,
+          attacks: [],
+        }
+        this.turns = []
+      },
+
+      monsterAttack: function(){
+        let monsterDamage = Math.floor(Math.random()*5)+10
+        return monsterDamage
+      },
+
+      playerAttack: function(){
+        let playerDamage = Math.floor(Math.random()*4)+8
+        return playerDamage
+      },
+
+      playerHeal: function(){
+        if( this.player.health >= 50 ){
+          return 20
+        }
+        return 13
+      },
+      checkEndGame: function(){
+        if(this.player.health >= 1 && this.monster.health <= 0){
+          this.restart()
+          alert('Parabens! Você matou o bicho doido!')
+        }
+        else if(this.player.health <= 0 && this.monster.health >= 1){
+          this.restart()
+          alert('Ó, tomou pêa pra 10 sozim :B')
+        }
+        else if(this.player.health <= 0 && this.monster.health <= 0){
+          this.restart()
+          alert('Morreu, mas pelo menos não foi pro céu sozim :)')
+        }
+      }
+
+    },
+  });
+
+</script>
+</body>
+</html>

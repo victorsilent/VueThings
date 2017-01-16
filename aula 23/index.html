@@ -1,0 +1,38 @@
+
+<!-- Put this in the HTML section in JSFiddle! -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+<div id="app">
+  <button v-on:click="counter++">Increase</button>
+  <button v-on:click="safada++">Increase</button>
+  <p>Counter: {{counter}} | {{safada}}</p>
+  <p>Result: {{ result() }} | {{output}}</p>
+</div>
+<script>
+  new Vue({
+    el: '#app',
+    data:{
+      counter: 0,
+      safada: 0,
+    },
+    methods: {
+      result: function () {
+        console.log('method');
+        return this.counter > 5 ? 'greater than 5' : 'smaller than 5';
+      }
+    },
+    watch:{
+      counter: function(value){
+        if(value>5){
+          this.counter = 0;
+        }
+      }
+    },
+    computed:{
+      output: function () {
+        console.log('computed');
+        return this.counter > 5 ? 'greater than 5' : 'smaller than 5';
+      }
+    }
+  });
+</script>

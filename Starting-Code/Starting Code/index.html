@@ -1,0 +1,33 @@
+
+<!-- Put this in the HTML section in JSFiddle! -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+<div id="app">
+
+  <h1>My Todo :)</h1>
+  <ul>
+    <li v-for="(todo, i) in todos">{{todo}} <button @click="complete(i)">X</button></li>
+  </ul>
+  <input type="text" v-model="item" @keyup.enter="addItem">
+</div>
+
+<script>
+   // Put this in the script section in JSFiddle
+  // In a local setup, you need to merge this and the index.html file into one file
+  new Vue({
+    el: '#app',
+    data: {
+      todos: [],
+      item:'',
+    },
+    methods:{
+      addItem: function(){
+        this.todos.push(this.item)
+        this.item = ''
+      },
+      complete: function(i){
+        this.todos.splice(i,1)
+      }
+    }
+  })
+</script>
