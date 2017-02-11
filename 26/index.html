@@ -1,0 +1,59 @@
+
+<!-- Put this in the HTML section in JSFiddle! -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<style>
+  .demo{
+    width: 100px;
+    height: 100px;
+    background-color: #000;
+    margin: 10px;
+    display: block;
+  }
+  .red{
+    background: #f00;
+  }
+
+  .green{
+    background: #0f0;
+  }
+
+  .blue{
+    background: #00f;
+  }
+</style>
+<div id="app">
+  <div 
+    class="demo"
+    @click="attachRed = !attachRed"
+    :class="divClasses">
+      
+    </div>
+  <div class="demo" :class="{red: attachRed}"></div>
+  <div class="demo" :class="[color, {red: attachRed}]"></div>
+  <div class="demo" :style="myFun"></div>
+  <hr>
+  <input type="text" v-model="color">
+</div>
+<script>
+  new Vue({
+    el: '#app',
+    data:{  
+      attachRed: false,
+      color: 'green'
+    },
+
+    computed: {
+      myFun: function(){
+        return {
+          backgroundColor: this.color
+        }
+      },
+      divClasses: function(){
+        return {
+          red: this.attachRed,
+          blue: !this.attachRed
+        }
+      }
+    }
+  });
+</script>
