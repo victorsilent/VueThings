@@ -7,9 +7,9 @@
                 <button class="btn btn-success" @click="currentComponent = 'appGreen'">Load Green Template</button>
                 <button class="btn btn-danger" @click="currentComponent = 'appRed'">Load Red Template</button>
                 <hr>
-                <component :is="currentComponent">
+                <component :is="currentComponent" :comoChegaLa="currentComponent" @clickeds="alerts($event)">
                     My ironic text
-                </component>   
+                </component>
             </div>
         </div>
     </div>
@@ -29,6 +29,11 @@
         data: function(){
             return {
                 currentComponent: 'appBlue'
+            }
+        },
+        methods:{
+            alerts(event){
+                alert(event);
             }
         }
     }
